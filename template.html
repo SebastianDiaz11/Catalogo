@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+<head>
+    <title>Catalogo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        body{
+            color: rgb(65, 65, 65);
+            /*font-family: "Sen", sans-serif;*/
+            font-family: "Montserrat", serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://i.postimg.cc/P5SfmzmT/fondo.png');
+            /*background-image: url('static/images/fondo.png');*/
+            background-size: cover;
+            background-position: center;
+        }
+        h1{
+            margin-bottom: 1px;
+            text-align: center;
+        }
+        h3{
+            margin-top: 0;
+            text-align: center;
+        }
+        .page {
+            text-align: center;
+            page-break-after: always;
+            page-break-inside: avoid;
+            margin-top: 23mm;
+            margin-bottom: 10mm;
+            min-height: 100vh;
+            margin-right: 15mm;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 35mm);
+            grid-template-rows: repeat(4, 60mm);
+            gap: 5mm;
+            /*width: 190mm;*/
+            width: 100%;
+            height: 260mm;
+            /*margin: 9mm 12mm 10mm 8mm;*/
+            margin: 0 auto;
+            font-size: 7pt;
+            page-break-inside: auto;
+            padding-top: 0;
+            justify-content: center;
+        }
+        .product{
+            border-radius: 8px;
+            padding: 5mm;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .product img {
+            max-width: 100%;
+            max-height: 35mm; 
+            object-fit: contain;
+        }
+        .imagen{
+            max-width: 100%;
+            height: 30mm;/*CAMBIO 40MM*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @page{
+            size: A4;
+            margin: 0;
+        }
+        .footer{
+            position: fixed;
+            bottom: 0;
+            margin: 0;
+            padding: 10mm 0;
+            display: grid;
+            grid-template-columns: repeat(3, 65mm);
+            justify-content: space-between;
+            text-align: center;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+        .header{
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 9mm; /*15 mm CAMBIO*/
+            text-align: center;
+            margin-top: 2mm;
+            padding: 5mm 0;
+            margin-bottom: 1mm;
+            font-size: 10pt;
+            padding-bottom: 0;
+            z-index: 1;
+        }
+        .header a{
+            position: absolute;
+            text-decoration: none;
+            margin-left: 15mm;
+        }
+        .footer-box{
+            width: 100%;
+            padding: 5mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9pt;
+            margin-bottom: 0;
+            margin-top: 2mm;
+        }
+        p{
+            margin: 0;
+        }
+        #price {
+            color: white;
+            font-size: 11pt;
+            font-weight: bold;
+            background-color: #005e66;
+            border: 1px solid #005e66;
+            border-radius: 7px;
+            padding: 0.7mm 0;
+            height: 6mm;
+            width: 25mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer-box p a{
+            color: rgb(65, 65, 65);
+        }
+        .nombre-prod{
+            height: auto; /*ultimo cambio*/
+            width: 35mm;/*TENIA 40*/
+            justify-content: center;
+            align-items: center;
+            margin-top: 2mm !important;
+        }
+        .data-prod{
+            margin-top: 1mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="header">
+        {% if products[0].categ_sec is not none and products[0].categ_sec != '' %}
+            <h1>{{ products[0].categ_sec }}</h1>
+            <h3>{{ products[0].categ_prin }}</h3>
+        {% else %}
+        <h1>{{ products[0].categ_prin }}</h1>
+        {% endif %}
+    </div>
+
+    {% set products_per_page = 20 %} <!--9-->
+    {% set total_products = products[0].products|length %}
+    {% set num_pages = (total_products // products_per_page) + (1 if total_products % products_per_page != 0 else 0) %}
+
+
+    {% for page in range(num_pages) %}
+    <section class="page">
+            <div class="grid-container">
+                {% set start = page * products_per_page %}
+                {% set end = start + products_per_page %}
+                
+                {% for product in products[0].products[start:end] %}
+                    
+                        <div class="product">
+                            <div class="imagen"> 
+                                    <img src="{{ product.imagen }}" alt="{{ product.nombre }}">
+                            </div>
+                            <div class="nombre-prod">
+                                <h3>{{ product.nombre }}</h3>
+                            </div>
+                            
+                            <div class="data-prod">
+                                <p>Cod.: {{product.sku}}</p>
+                                <div id="price">
+                                    <p>${{ product.precio }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                {% endfor %}
+                
+            </div>
+    </section>
+    {% endfor %}
+
+    <div class="footer">
+        <div class="footer-box">
+            <p></p>
+        </div>
+        <div class="footer-box">
+            <p>Válido hasta: {{fecha}}<br><span style="font-weight: normal; font-size: 8pt;">Precio sujeto a cambios</span></p>
+        </div>
+        <div class="footer-box">
+            <p></p>
+        </div>
+    </div>
+
+</body>
+</html>
